@@ -158,41 +158,45 @@ export default MarkdownTut
 <br />
 
 
-## Step 5 — Add Colors to Markers
-``` python
-#Import Library
-import folium
-import pandas as pd
+## Step 5 — import InitialMarkdown from other file
+To mimic real case, InitialMarkdown markdown is called from backend API. <br/>
+For now, we just import InitialMarkdown markdown from local file.<br/>
 
-#Load Data
-data = pd.read_csv("Volcanoes_USA.txt")
-lat = data['LAT']
-lon = data['LON']
-elevation = data['ELEV']
-
-#Function to change colors
-def color_change(elev):
-    if(elev < 1000):
-        return('green')
-    elif(1000 <= elev <3000):
-        return('orange')
-    else:
-        return('red')
-
-#Create base map
-map = folium.Map(location=[37.296933,-121.9574983], zoom_start = 5, tiles = "Mapbox bright")
-
-#Plot Markers
-for lat, lon, elevation in zip(lat, lon, elevation):
-    folium.Marker(location=[lat, lon], popup=str(elevation), icon=folium.Icon(color = color_change(elevation))).add_to(map)
-
-#Save the map
-map.save("map1.html")
+Create a initialMarkdown.js file, and write code inside:
+``` javascript
+export const text =
+`
+\`\`\`
+function addTwoNumbers(a, b) {
+  return a + b
+}
+const name = "Ben"
+const age = 27
+cosnt number = Math.random() * 10
+\`\`\`
+`
 ```
-<img src="https://i.ibb.co/bNMZPmk/Step5.png" width="100%">
-<br />
-<br />
+Then import this initialMarkdown.js file to Markdown.jsx <br/>
+Simply add this line into Markdown.jsx <br/>
+`import { text } from './initialMarkdown.js'`
 
+Top of Markdown.jsx should be like:
+``` javascript
+import React from 'react'
+import marked,{ Renderer } from 'marked'
+
+import './style.css'
+import { text } from './initialMarkdown.js'
+
+class MarkdownTut extends React.Component {
+  ...
+}
+export default MarkdownTut
+```
+<img src="https://i.ibb.co/5G8X7LR/MD-Step5.png" width="100%">
+<br />
+<br />
+<br />
 
 
 ## Step 6 — Change Icons
