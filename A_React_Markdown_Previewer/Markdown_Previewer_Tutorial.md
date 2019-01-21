@@ -158,7 +158,7 @@ export default MarkdownTut
 <br />
 
 
-## Step 5 — import InitialMarkdown from other file
+## Step 5 — import InitialMarkdown from local file
 To mimic real case, InitialMarkdown markdown is called from backend API. <br/>
 For now, we just import InitialMarkdown markdown from local file.<br/>
 
@@ -199,77 +199,194 @@ export default MarkdownTut
 <br />
 
 
-## Step 6 — Change Icons
-``` python
-#Import Library
-import folium
-from folium.plugins import MarkerCluster
-import pandas as pd
+## Step 6 — Customzie code snippet highlight syntax
+We want to customize marked.js a little bit, especially for its code highlights. <br/>
+This can be done by using [highlight.js](https://highlightjs.org/) <br/>
+We need to install highlight.js package first:  `npm install --save highlight.js` <br/>
+Firstly, update Markdown.jsx as below:
+``` javascript
+import React from 'react'
+import marked,{ Renderer } from 'marked'
+import hljs from 'highlight.js';
 
-#Load Data
-data = pd.read_csv("Volcanoes_USA.txt")
-lat = data['LAT']
-lon = data['LON']
-elevation = data['ELEV']
+import './style.css'
+import { text } from './initialMarkdown.js'
 
-#Function to change colors
-def color_change(elev):
-    if(elev < 1000):
-        return('green')
-    elif(1000 <= elev <3000):
-        return('orange')
-    else:
-        return('red')
+class MarkdownTut extends React.Component {
+  constructor(props){
+    super(props)
+    // const text ="# Header1"
+    this.state = {
+      markdown: text
+    }
+  }
+  rawMarkup(markdown) {
+  	marked.setOptions({
+  		renderer: new marked.Renderer(),
+  		gfm: true,
+  		tables: true,
+  		breaks: true,
+  		pedantic: false,
+  		sanitize: true,
+  		smartLists: true,
+  		smartypants: false,
+  		highlight: function (code) {
+  			return hljs.highlightAuto(code).value
+  		}
+  	})
 
-#Create base map
-map = folium.Map(location=[37.296933,-121.9574983], zoom_start = 5, tiles = "Mapbox bright")
+  	var rawMarkup = marked(markdown, {sanitize: true})
+  	return {
+  		__html: rawMarkup
+  	}
+  }
+  handleChange(e) {
+    this.setState({
+      markdown: e.target.value
+    })
+  }
+  render() {
+    const markdown = this.state.markdown
+    return(
+      <div className="MarkdownPreviewWrapper row">
+        <div className="col-xs-12 col-sm-6 MarkdownTextInput">
+          <textarea id="editor"
+                    className="editor"
+                    value={markdown}
+                    onChange={this.handleChange.bind(this)} />
+        </div>
+        <div className="col-xs-12 col-sm-6 MarkdownPreview">
+          <span dangerouslySetInnerHTML={this.rawMarkup(markdown)} />
+        </div>
+      </div>
+    )
+  }
+}
+export default MarkdownTut
 
-#Plot Markers
-for lat, lon, elevation in zip(lat, lon, elevation):
-    folium.CircleMarker(location=[lat, lon], radius = 9, popup=str(elevation)+" m", fill_color=color_change(elevation), color="gray", fill_opacity = 0.9).add_to(map)
-
-#Save the map
-map.save("map1.html")
 ```
-<img src="https://i.ibb.co/F8DNYmq/Step6.png" width="100%">
-<br />
-<br />
 
-
-
-## Step 7 — Cluster all Markers
-``` python
-#Import Library
-import folium
-from folium.plugins import MarkerCluster
-import pandas as pd
-
-#Load Data
-data = pd.read_csv("Volcanoes_USA.txt")
-lat = data['LAT']
-lon = data['LON']
-elevation = data['ELEV']
-
-#Function to change colors
-def color_change(elev):
-    if(elev < 1000):
-        return('green')
-    elif(1000 <= elev <3000):
-        return('orange')
-    else:
-        return('red')
-
-#Create base map
-map = folium.Map(location=[37.296933,-121.9574983], zoom_start = 5, tiles = "CartoDB dark_matter")
-
-#Create Cluster
-marker_cluster = MarkerCluster().add_to(map)
-
-#Plot Markers and add to 'marker_cluster'
-for lat, lon, elevation in zip(lat, lon, elevation):
-    folium.CircleMarker(location=[lat, lon], radius = 9, popup=str(elevation)+" m", fill_color=color_change(elevation), color="gray", fill_opacity = 0.9).add_to(marker_cluster)
-
-#Save the map
-map.save("map1.html")
+Secondly, to use highlight.js, we need to add a few lines into index.html
+``` html
+<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.4/styles/default.min.css">
+<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.4/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
 ```
-<img src="https://i.ibb.co/t2ddMv8/Step7.png" width="100%">
+
+Thirdly, Add below css code to style.css
+``` css
+/*
+Atom One Dark by Daniel Gamage
+Original One Dark Syntax theme from https://github.com/atom/one-dark-syntax
+base:    #282c34
+mono-1:  #abb2bf
+mono-2:  #818896
+mono-3:  #5c6370
+hue-1:   #56b6c2
+hue-2:   #61aeee
+hue-3:   #c678dd
+hue-4:   #98c379
+hue-5:   #e06c75
+hue-5-2: #be5046
+hue-6:   #d19a66
+hue-6-2: #e6c07b
+*/
+
+
+.hljs {
+  display: block;
+  overflow-x: auto;
+  padding: 0.5em;
+  color: #abb2bf;
+  background: #282c34;
+  /* background:  #3a3a3a; */
+}
+
+.hljs-comment,
+.hljs-quote {
+  color: #5c6370;
+  font-style: italic;
+}
+
+.hljs-doctag,
+.hljs-keyword,
+.hljs-formula {
+  color: #c678dd;
+  /* color: red; */
+}
+
+.hljs-section,
+.hljs-name,
+.hljs-selector-tag,
+.hljs-deletion,
+.hljs-subst {
+  color: #e06c75;
+}
+
+.hljs-literal {
+  color: #56b6c2;
+}
+
+.hljs-string,
+.hljs-regexp,
+.hljs-addition,
+.hljs-attribute,
+.hljs-meta-string {
+  color: #98c379;
+}
+
+.hljs-built_in,
+.hljs-class .hljs-title {
+  color: #e6c07b;
+}
+
+.hljs-attr,
+.hljs-variable,
+.hljs-template-variable,
+.hljs-type,
+.hljs-selector-class,
+.hljs-selector-attr,
+.hljs-selector-pseudo,
+.hljs-number {
+  color: #d19a66;
+}
+
+.hljs-symbol,
+.hljs-bullet,
+.hljs-link,
+.hljs-meta,
+.hljs-selector-id,
+.hljs-title {
+  color: #61aeee;
+}
+
+.hljs-emphasis {
+  font-style: italic;
+}
+
+.hljs-strong {
+  font-weight: bold;
+}
+
+.hljs-link {
+  text-decoration: underline;
+}
+
+/* code {
+  background-color: #ffe5e5;
+  color: #ff3232;
+  padding: .25vw .5vw;
+  border-radius: 5px;
+} */
+
+pre {
+  display: inline-block;
+  background-color: #3a3a3a;
+  color: white;
+  padding: .25vw .5vw;
+}
+code {
+  background-color: #3a3a3a !important;
+}
+```
+<img src="https://i.ibb.co/wCQyWGN/MD-Step6.png" width="100%">
