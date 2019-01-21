@@ -64,7 +64,6 @@ You should be able see Header1 is processed as "Header1" by marked.js
 Since we want to show a TextArea on the left, and have a live Previewer on the right.  <br/>
 Let's use bootstrap to separate component Left as 'TextArea' and component Right as 'Previewer' <br/>
 
-Notice <br/>
 We add a simple `handleChange(e) {}` function here. <br/>
 Whenever there is a change in TextArea input, we sync the input to this.state.markdown <br/>
 As right Previewer uses this.state.markdown as function input, so we always have the same and synced data.
@@ -120,32 +119,43 @@ Run your code and should have layout like:
 
 
 
-## Step 4 — Adding Markers from Data
-``` python
-#Import Library
-import folium
-import pandas as pd
-
-#Load Data
-data = pd.read_csv("Volcanoes_USA.txt")
-lat = data['LAT']
-lon = data['LON']
-elevation = data['ELEV']
-
-#Create base map
-map = folium.Map(location=[37.296933,-121.9574983], zoom_start = 5, tiles = "Mapbox bright")
-
-#Plot Markers
-for lat, lon, elevation in zip(lat, lon, elevation):
-    folium.Marker(location=[lat, lon], popup=str(elevation)+" m", icon=folium.Icon(color = 'gray')).add_to(map)
-
-#Save the map
-map.save("map1.html")
+## Step 4 — Add Css file and make TextArea look good.
+Add a new style.css file next to Markdown.jsx file. <br/>
+Add below css code to style TextArea a little bit.
+``` css
+.MarkdownPreviewWrapper .MarkdownTextInput .editor{
+  /* background-color: yellow; */
+    padding: 10px 5px;
+  	resize: vertical;
+  	overflow: auto;
+  	width: 100%;
+  	height: 564px;
+  	margin: 0 auto;
+  	display: block;
+  	margin-bottom: 15px;
+}
 ```
-<img src="https://i.ibb.co/FzNcfvT/Step4.png" width="100%">
-<br />
-<br />
+Then import this style.css file to Markdown.jsx <br/>
+Simply add this line into Markdown.jsx <br/>
+`import './style.css'`
 
+Top of Markdown.jsx should be like:
+``` javascript
+import React from 'react'
+import marked,{ Renderer } from 'marked'
+
+import './style.css'
+
+class MarkdownTut extends React.Component {
+  ...
+}
+export default MarkdownTut
+```
+
+<img src="https://i.ibb.co/Hq770Zm/MD-Step4.png" width="100%">
+<br />
+<br />
+<br />
 
 
 ## Step 5 — Add Colors to Markers
