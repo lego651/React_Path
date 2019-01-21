@@ -5,14 +5,15 @@ npm install marked --save
 
 ## Step1 - Create-React-App
 Follow this tutorial to create a react app from facebook.
-
+<br/>
+<br/>
+<br/>
 
 
 ## Step 2 — Create a Markdown React Container Component
 There are many ways to implement Markdown feature in React.<br/>
 
-The one we choose here is [marked.js](https://www.npmjs.com/package/marked) <br/>
-Because this package has most weekly downloads. <br/>
+The one we choose here is [marked.js](https://www.npmjs.com/package/marked). Because this package has most weekly downloads. <br/>
 You can install this package by:  `npm install marked --save` <br/>
 You can find more documents about how to use marked.js [here](https://marked.js.org/#/README.md#README.md) <br/>
 Or google "use marked.js with React" <br/>
@@ -50,8 +51,11 @@ class Markdown extends React.Component {
 export default Markdown
 ```
 You should be able see Header1 is processed as "Header1" by marked.js
-<img src="https://i.ibb.co/09GZw1f/MD-Step2.png" width="100%">
-<br />
+<img src="https://i.ibb.co/09GZw1f/MD-Step2.png" width="50%">
+<br/>
+<br/>
+<br/>
+
 
 
 
@@ -61,8 +65,8 @@ Since we want to show a TextArea on the left, and have a live Previewer on the r
 Let's use bootstrap to separate component Left as 'TextArea' and component Right as 'Previewer' <br/>
 
 Notice <br/>
-We add a simple handleChange(e) {} function here. <br/>
-Whenever there is a change in TextArea input, we sync the input to this.state.markdown
+We add a simple `handleChange(e) {}` function here. <br/>
+Whenever there is a change in TextArea input, we sync the input to this.state.markdown <br/>
 As right Previewer uses this.state.markdown as function input, so we always have the same and synced data.
 
 
@@ -107,13 +111,12 @@ class MarkdownTut extends React.Component {
   }
 }
 export default MarkdownTut
-
-
 ```
+Run your code and should have layout like:
 <img src="https://i.ibb.co/r5053XW/MD-Step3.png" width="100%">
 <br />
 <br />
-
+<br />
 
 
 
