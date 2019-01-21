@@ -9,20 +9,18 @@ Follow this tutorial to create a react app from facebook.
 
 
 ## Step 2 — Create a Markdown React Container Component
-There are many ways to implement Markdown feature in React.
+There are many ways to implement Markdown feature in React.<br/>
 
-The one we choose here is [marked.js](https://www.npmjs.com/package/marked)
-Because this package has most weekly downloads.
-You can install this package by:  `npm install marked --save`
-You can find more documents about how to use marked.js [here](https://marked.js.org/#/README.md#README.md)
-Or google "use marked.js with React"
+The one we choose here is [marked.js](https://www.npmjs.com/package/marked) <br/>
+Because this package has most weekly downloads. <br/>
+You can install this package by:  `npm install marked --save` <br/>
+You can find more documents about how to use marked.js [here](https://marked.js.org/#/README.md#README.md) <br/>
+Or google "use marked.js with React" <br/>
 
-Create a new Markdown.jsx file, and write code as below to try out marked.js first.
+Create a new Markdown.jsx file, and write code as below to try out marked.js first. <br/>
 ``` javascript
 import React from 'react'
 import marked,{ Renderer } from 'marked'
-
-import './style.css'
 
 class Markdown extends React.Component {
   constructor(props){
@@ -58,23 +56,61 @@ You should be able see Header1 is processed as "Header1" by marked.js
 
 
 
-## Step 3 — Add Multiple Markers
-``` python
-#Import Library
-import folium
+## Step 3 — TextArea on the left while Previewer on the right
+Since we want to show a TextArea on the left, and have a live Previewer on the right.  <br/>
+Let's use bootstrap to separate component Left as 'TextArea' and component Right as 'Previewer' <br/>
 
-#Create base map
-map = folium.Map(location=[37.296933,-121.9574983], zoom_start = 8, tiles = "Mapbox bright")
-
-#Multiple Markers
-for coordinates in [[37.4074687,-122.086669],[37.8199286,-122.4804438]]:
-    folium.Marker(location=coordinates, icon=folium.Icon(color = 'green')).add_to(map)
+Notice <br/>
+We add a simple handleChange(e) {} function here. <br/>
+Whenever there is a change in TextArea input, we sync the input to this.state.markdown
+As right Previewer uses this.state.markdown as function input, so we always have the same and synced data.
 
 
-#Save the map
-map.save("map1.html")
+``` javascript
+import React from 'react'
+import marked,{ Renderer } from 'marked'
+
+class MarkdownTut extends React.Component {
+  constructor(props){
+    super(props)
+    const text ="# Header1"
+    this.state = {
+      markdown: text
+    }
+  }
+  rawMarkup(markdown) {
+  	var rawMarkup = marked(markdown, {sanitize: true})
+  	return {
+  		__html: rawMarkup
+  	}
+  }
+  handleChange(e) {
+    this.setState({
+      markdown: e.target.value
+    })
+  }
+  render() {
+    const markdown = this.state.markdown
+    return(
+      <div className="MarkdownPreviewWrapper row">
+        <div className="col-xs-12 col-sm-6 MarkdownTextInput">
+          <textarea id="editor"
+                    className="editor"
+                    value={markdown}
+                    onChange={this.handleChange.bind(this)} />
+        </div>
+        <div className="col-xs-12 col-sm-6 MarkdownPreview">
+          <span dangerouslySetInnerHTML={this.rawMarkup(markdown)} />
+        </div>
+      </div>
+    )
+  }
+}
+export default MarkdownTut
+
+
 ```
-<img src="https://i.ibb.co/VNFvpq6/Step3.png" width="100%">
+<img src="https://i.ibb.co/r5053XW/MD-Step3.png" width="100%">
 <br />
 <br />
 
